@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.5s;
+}
+
+main{
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.sidebar{
+    width: 60px;
+    background-color: #dd203c;
+}
+
+.chat{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1{
+    font-size: 96px;
+    font-weight: bold;
+    margin: 40px 0;
+}
+
+.pergunta{
+    display: flex;
+    margin: 15vh 0;
+}
+
+input{
+    width: 800px;
+    font-size: 24px;
+    border: none;
+    border-bottom: solid 1px #272727;
+    outline: none;
+    padding: 10px 0;
+    transition: background-color 0.5s;
+}
+
+button{
+    background-color: #dd203c;
+    padding: 20px 25px;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+body.dark-mode {
+    background-color: #272727;
+    color: #ffffff;
+}
+
+body.dark-mode input{
+    background-color: #272727;
+    color: #ffffff;
+    border-bottom: solid 1px #ffffff;
+}
+
+#toggle-mode{
+    width: 60px;
+    height: 60px;
+    margin: 20px;
+}
