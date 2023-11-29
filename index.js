@@ -6,6 +6,26 @@ recognition.continuous = true;
 
 recognition.start();
 
+const GetKey = (service, callback) => {
+    fetch('keys.json')
+        .then(response => response.json())
+        .then(data => {
+            callback(data[service]);
+        })
+        .catch(error => console.error(error));
+};
+
+let openAIKey;
+let MicrosoftKey;
+
+GetKey('openai', (key) => {
+    openAIKey = key;
+});
+
+GetKey('microsoft', (key) => {
+    MicrosoftKey = key;
+});
+
 document.addEventListener('DOMContentLoaded', function () {
     const toggleButton = document.getElementById('toggle-mode');    
     toggleButton.addEventListener('click', function () {
@@ -25,14 +45,12 @@ const TrocarTema = () => {
 }
 
 // Criamos o método para consultar a API do OpenAI
-const ConsultarOpenAI = async (pergunta) => {
-
-    let chave_api = 'SUA_CHAVE_API';
+const ConsultarOpenAI = (pergunta) => {
 
     // Aqui vamos configurar o cabeçalho da requisição
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer "+chave_api);
+    myHeaders.append("Authorization", "Bearer "+openAIKey);
     myHeaders.append("Cookie", "__cf_bm=v0AdReGOtspMRNHPTxBnwh4YpzHbRR3WFc5yw.Kbog0-1701178883-0-AUrAM7cQPblZhbmGBJYiRxgDAo+gYsy84++07t88g4mU3GzzmZoydnJUoPQY977YN/crgICgRVcITFTr1dYuDAs=; _cfuvid=mfC4AWHdBgbcC1SKc7l12a8t8N7UqskkQAFbDwn2o5E-1701178883225-0-604800000");
 
     // Aqui vamos configurar o corpo da requisição
@@ -132,7 +150,7 @@ const CapturarVoz = () => {
 const ReproduzirVoz = (resposta) => {
 
     var myHeaders = new Headers();
-    myHeaders.append("Ocp-Apim-Subscription-Key", "d98f2a2fdcae4060819904e630e814d6");
+    myHeaders.append("Ocp-Apim-Subscription-Key", MicrosoftKey);
     myHeaders.append("Content-Type", "application/ssml+xml");
     myHeaders.append("X-Microsoft-OutputFormat", "audio-16khz-128kbitrate-mono-mp3");
     myHeaders.append("User-Agent", "curl");
@@ -166,6 +184,8 @@ const ReproduzirVoz = (resposta) => {
     });
 
 }
+
+
 
 
 CapturarVoz();
