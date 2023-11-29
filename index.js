@@ -55,7 +55,6 @@ const ConsultarOpenAI = async (pergunta) => {
 
 const CapturarVoz = () => {
 
-    var startButton   = document.getElementById('capture');
     var resultElement = document.getElementById('prompt');
 
     var recognition = new webkitSpeechRecognition();
@@ -68,9 +67,11 @@ const CapturarVoz = () => {
 
     recognition.addEventListener('result', (event) => {
 
-        const result = event.results[event.results.length - 1][0].transcript;        
+        const result = event.results[event.results.length - 1][0].transcript;         
 
         if (result.toLowerCase().includes('jarvis')) {
+            
+            TrocarCor('#4CAF50');
 
             // Comece a salvar a pergunta quando "Jarvis" é detectado
             let array_pergunta = result.toLowerCase().split(/(jarvis)/);
@@ -94,16 +95,22 @@ const CapturarVoz = () => {
             recognition.stop();
 
             // Consulte a API do OpenAI
-            ConsultarOpenAI(array_pergunta);
+            // ConsultarOpenAI(array_pergunta);
 
             // Depois de 5 segundos, reinicie a captura de voz
             setTimeout(() => {
                 recognition.start();
+                TrocarCor('#dd203c');
             }, 5000);
         }
     });
 
     
+}
+
+const TrocarCor = (cor) => {
+    var startButton = document.getElementById('capture');
+    startButton.style.backgroundColor = cor;
 }
 
 const ReproduzirVoz = (resposta) => {
