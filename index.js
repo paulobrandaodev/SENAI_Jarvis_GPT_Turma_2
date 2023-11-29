@@ -1,20 +1,33 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const toggleButton = document.getElementById('toggle-mode');
-    const body = document.body;
+var recognition = new webkitSpeechRecognition();
 
+recognition.lang = window.navigator.language;
+recognition.interimResults = false;
+recognition.continuous = true;
+
+recognition.start();
+
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleButton = document.getElementById('toggle-mode');    
     toggleButton.addEventListener('click', function () {
-        body.classList.toggle('dark-mode');
-        const isDarkMode = body.classList.contains('dark-mode');
-        toggleButton.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        TrocarTema();
     });
 });
 
+const TrocarTema = () => {
 
+    const body = document.body;
+    const isDarkMode = body.classList.contains('dark-mode');
+
+    body.classList.toggle('dark-mode');    
+
+    const toggleButton = document.getElementById('toggle-mode');
+    toggleButton.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+}
 
 // Criamos o método para consultar a API do OpenAI
 const ConsultarOpenAI = async (pergunta) => {
 
-    let chave_api = 'SUA_CHAVE_AQUI';
+    let chave_api = 'SUA_CHAVE_API';
 
     // Aqui vamos configurar o cabeçalho da requisição
     var myHeaders = new Headers();
@@ -53,25 +66,32 @@ const ConsultarOpenAI = async (pergunta) => {
     .catch(error => console.log('error', error));
 }
 
+const TrocarCor = (cor) => {
+    var startButton = document.getElementById('capture');
+    startButton.style.backgroundColor = cor;
+}
+
 const CapturarVoz = () => {
 
     var resultElement = document.getElementById('prompt');
 
-    var recognition = new webkitSpeechRecognition();
-
-    recognition.lang = window.navigator.language;
-    recognition.interimResults = false;
-    recognition.continuous = true;
-
-    recognition.start();
-
     recognition.addEventListener('result', (event) => {
-
+        
         const result = event.results[event.results.length - 1][0].transcript;         
 
-        if (result.toLowerCase().includes('jarvis')) {
-            
+        if (result.toLowerCase().includes('jarvis')) { 
+
             TrocarCor('#4CAF50');
+
+            if (result.toLowerCase().includes('trocar tema')) {
+                TrocarTema();
+                recognition.stop();
+                setTimeout(() => {
+                    recognition.start();
+                    TrocarCor('#dd203c');
+                }, 1000);
+                return;
+            } 
 
             // Comece a salvar a pergunta quando "Jarvis" é detectado
             let array_pergunta = result.toLowerCase().split(/(jarvis)/);
@@ -95,9 +115,9 @@ const CapturarVoz = () => {
             recognition.stop();
 
             // Consulte a API do OpenAI
-            // ConsultarOpenAI(array_pergunta);
+            ConsultarOpenAI(array_pergunta);
 
-            // Depois de 5 segundos, reinicie a captura de voz
+            // Aguarde 5 segundos e inicie a captura de voz novamente
             setTimeout(() => {
                 recognition.start();
                 TrocarCor('#dd203c');
@@ -108,10 +128,6 @@ const CapturarVoz = () => {
     
 }
 
-const TrocarCor = (cor) => {
-    var startButton = document.getElementById('capture');
-    startButton.style.backgroundColor = cor;
-}
 
 const ReproduzirVoz = (resposta) => {
 
