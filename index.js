@@ -14,10 +14,12 @@ document.addEventListener('DOMContentLoaded', function () {
 // Criamos o método para consultar a API do OpenAI
 const ConsultarOpenAI = async (pergunta) => {
 
+    let chave_api = 'SUA_CHAVE_AQUI';
+
     // Aqui vamos configurar o cabeçalho da requisição
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", "Bearer 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");
+    myHeaders.append("Authorization", "Bearer "+chave_api);
     myHeaders.append("Cookie", "__cf_bm=v0AdReGOtspMRNHPTxBnwh4YpzHbRR3WFc5yw.Kbog0-1701178883-0-AUrAM7cQPblZhbmGBJYiRxgDAo+gYsy84++07t88g4mU3GzzmZoydnJUoPQY977YN/crgICgRVcITFTr1dYuDAs=; _cfuvid=mfC4AWHdBgbcC1SKc7l12a8t8N7UqskkQAFbDwn2o5E-1701178883225-0-604800000");
 
     // Aqui vamos configurar o corpo da requisição
@@ -59,19 +61,48 @@ const CapturarVoz = () => {
     var recognition = new webkitSpeechRecognition();
 
     recognition.lang = window.navigator.language;
-    recognition.interimResults = true;
+    recognition.interimResults = false;
+    recognition.continuous = true;
 
-    startButton.addEventListener('click', () => { recognition.start(); });
+    recognition.start();
 
     recognition.addEventListener('result', (event) => {
-        const result = event.results[event.results.length - 1][0].transcript;
-        resultElement.value = result;
+
+        const result = event.results[event.results.length - 1][0].transcript;        
+
+        if (result.toLowerCase().includes('jarvis')) {
+
+            // Comece a salvar a pergunta quando "Jarvis" é detectado
+            let array_pergunta = result.toLowerCase().split(/(jarvis)/);
+
+            // Remova o que vem antes de "Jarvis"
+            array_pergunta.shift();
+            // ["Jarvis", "qual é a previsão", "Jarvis", "do tempo?"]
+            //     0             1                 2          3
+
+            // ['jarvis', ' quem é o ', 'jarvis', ' na marvel']
+            // Remover o primeiro "Jarvis" do array
+            array_pergunta.shift();
+
+            // Unir o restante do array em uma string
+            array_pergunta = array_pergunta.join('');
+
+            // Escrevemos no input a pergunta
+            resultElement.value = array_pergunta;
+
+            // Pare a captura de voz
+            recognition.stop();
+
+            // Consulte a API do OpenAI
+            ConsultarOpenAI(array_pergunta);
+
+            // Depois de 5 segundos, reinicie a captura de voz
+            setTimeout(() => {
+                recognition.start();
+            }, 5000);
+        }
     });
 
-    recognition.addEventListener('end', () => {
-        const textoCapturado = resultElement.value;
-        ConsultarOpenAI(textoCapturado);
-    });
     
 }
 
