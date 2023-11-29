@@ -6,6 +6,10 @@ recognition.continuous = true;
 
 recognition.start();
 
+// Resolvemos o problema de não poder iniciar a captura de voz automaticamente
+let h1 = document.querySelector('h1');
+h1.click();
+
 const GetKey = (service, callback) => {
     fetch('keys.json')
         .then(response => response.json())
