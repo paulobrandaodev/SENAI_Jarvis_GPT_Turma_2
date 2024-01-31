@@ -101,7 +101,7 @@ const CapturarVoz = () => {
         
         const result = event.results[event.results.length - 1][0].transcript;         
 
-        if (result.toLowerCase().includes('jarvis')) { 
+        if (result.toLowerCase().includes('senai')) { 
 
             TrocarCor('#4CAF50');
 
@@ -116,7 +116,7 @@ const CapturarVoz = () => {
             } 
 
             // Comece a salvar a pergunta quando "Jarvis" é detectado
-            let array_pergunta = result.toLowerCase().split(/(jarvis)/);
+            let array_pergunta = result.toLowerCase().split(/(senai)/);
 
             // Remova o que vem antes de "Jarvis"
             array_pergunta.shift();
